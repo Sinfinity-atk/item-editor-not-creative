@@ -1,31 +1,68 @@
 plugins {
     id 'fabric-loom' version '1.13-SNAPSHOT'
+    id 'com.modrinth.minotaur' version '2.+'
 }
 
-group = 'com.mod'
-version = '1.0.2'
-base {
-    archivesName.set('windlaunch')  // Correct way to set the archives base name
-}
+version = project.mod_version
+group = project.maven_group
+base.archivesName = "${project.archives_base_name}-${project.minecraft_version}"
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
-
-repositories {
-    mavenCentral()
-    maven {
-        name = 'Fabric'
-        url = 'https://maven.fabricmc.net/'
+loom {
+    accessWidenerPath = file('resources/simple-item-editor.accesswidener')
+    runConfigs.all {
+        ideConfigGenerated(true)
+        runDir = '../../run'
     }
 }
 
+repositories {
+
+}
+
 dependencies {
-    minecraft 'com.mojang:minecraft:1.21.10'
-    mappings 'net.fabricmc:yarn:1.21.10+build.3'
-    modImplementation 'net.fabricmc:fabric-loader:0.18.1'
-    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.138.3+1.21.10'
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraft_version', project.minecraft_version
+    inputs.property 'loader_version', project.loader_version
+    inputs.property 'java_version', project.java_version
+
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version,
+                'minecraft_version': project.minecraft_version,
+                'loader_version': project.loader_version,
+                'java_version': project.java_version
+    }
+
+    from('resources') { into '.' }
 }
 
 java {
     withSourcesJar()
+    JavaVersion compatibility = JavaVersion.VERSION_17
+    if (project.java_version == 21) {
+        compatibility = JavaVersion.VERSION_21
+    }
+
+    targetCompatibility = compatibility
+    sourceCompatibility = compatibility
+}
+
+modrinth {
+    projectId = 'simple-item-editor'
+    versionType = 'beta'
+    versionName = "Simple Item Editor ${project.version}"
+    changelog = ''
+    uploadFile = remapJar
+    gameVersions = [ project.minecraft_version ]
+
+    dependencies {
+        required.project "fabric-api"
+    }
 }
