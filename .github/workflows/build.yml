@@ -15,11 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Make Gradle wrapper executable
+      # 2. Make gradlew executable
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # 3. Set up Java
+      # 3. Set up Java 21 (required for Loom 1.13+ / MC 1.21)
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
@@ -41,11 +41,11 @@ jobs:
       - name: Build and remap mod
         run: ./gradlew clean build remapJar --no-daemon
 
-      # 6. List built files (optional debug)
+      # 6. List built files (for debugging)
       - name: List built files
         run: ls -la build/libs/
 
-      # 7. Upload the remapped JAR using the supported v4 action
+      # 7. Upload the remapped JAR using supported v4 action
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4
         with:
