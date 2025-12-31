@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repository
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -33,17 +33,17 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      # 4. Build and remap JAR
+      # 4. Build and remap mod
       - name: Build and remap mod
         run: ./gradlew clean build remapJar --no-daemon
 
-      # 5. List built files for debugging (optional)
+      # 5. List built files (optional debug)
       - name: List built files
         run: ls -la build/libs/
 
-      # 6. Upload the remapped JAR as an artifact
+      # 6. Upload the remapped JAR using the supported v4 action
       - name: Upload mod JAR
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: simple-item-editor
           path: build/libs/*-all.jar
