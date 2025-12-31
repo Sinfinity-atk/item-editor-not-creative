@@ -1,4 +1,4 @@
-name: Build Mod
+name: Build Simple Item Editor
 
 on:
   push:
@@ -11,16 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repo
+      # 1. Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up Java (Gradle needs it)
+      # 2. Set up Java
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17' # use 21 if project.java_version = 21
+          distribution: temurin
+          java-version: 17
 
       # 3. Cache Gradle dependencies
       - name: Cache Gradle
@@ -37,11 +37,11 @@ jobs:
       - name: Build and remap mod
         run: ./gradlew clean build remapJar --no-daemon
 
-      # 5. List files for debugging (optional)
+      # 5. List built files for debugging (optional)
       - name: List built files
         run: ls -la build/libs/
 
-      # 6. Upload the remapped JAR
+      # 6. Upload the remapped JAR as an artifact
       - name: Upload mod JAR
         uses: actions/upload-artifact@v3
         with:
