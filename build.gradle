@@ -53,16 +53,3 @@ java {
     targetCompatibility = compatibility
     sourceCompatibility = compatibility
 }
-
-modrinth {
-    projectId = 'simple-item-editor'
-    versionType = 'beta'
-    versionName = "Simple Item Editor ${project.version}"
-    changelog = ''
-    uploadFile = remapJar
-    gameVersions = [ project.minecraft_version ]
-
-    dependencies {
-        required.project "fabric-api"
-    }
-}
